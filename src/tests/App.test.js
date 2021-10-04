@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 import renderWithRouter from '../components/renderWithRouter';
@@ -28,16 +28,6 @@ describe('App', () => {
     expect(path).toBe('/');
   });
 
-  test('se a aplicação é redirecionada para a página inicial,'
-  + 'na URL / ao clicar no link Home da barra de navegação.', () => {
-    const { history } = renderWithRouter(<App />);
-    const about = screen.getByRole('link', {
-      name: 'About' });
-    userEvent.click(about);
-    const path = history.location.pathname;
-    expect(path).toBe('/about');
-  });
-
   test('se a aplicação é redirecionada para a página About,'
   + 'na URL /about ao clicar no link About da barra de navegação.', () => {
     const { history } = renderWithRouter(<App />);
@@ -57,5 +47,16 @@ describe('App', () => {
     userEvent.click(favoritePokemons);
     const path = history.location.pathname;
     expect(path).toBe('/favorites');
+  });
+
+  test('se a aplicação é redirecionada para a página Not Found '
+  + 'ao entrar em uma URL desconhecida.', () => {
+    const { history } = renderWithRouter(<App />);
+    history.push('/endereco-inexistente');
+    const notFound = screen.getByRole('heading', {
+      level: 2,
+      name: /page requested not found Crying emoji/i,
+    });
+    expect(notFound).toBeInTheDocument();
   });
 });
